@@ -38,13 +38,30 @@ process_file <- function(filepath, patterns) {
       break
     }
     pattern_check <- find_pattern(line, patterns = patterns)
-    if (!is.null(pattern_check))
-      markers[[length(markers) + 1]] <- list(nr = n,
-                                             type = pattern_check,
-                                             text = stringr::str_replace(
-                                               line, pattern_check, "")
+    if (!is.null(pattern_check)) {
+      markers[[length(markers) + 1]] <- list(
+        nr = n,
+        type = pattern_check,
+        text = stringr::str_replace(
+          line, pattern_check, ""
+        )
       )
-    n <- n + 1
+      repeat {
+        n <- n + 1
+        line <- readLines(con, n = 1)
+        multiline_check <- is_multiline(line)
+        if (!multiline_check) {
+          break
+        }
+        markers[[length(markers) + 1]] <- list(
+          nr = n,
+          type = pattern_check,
+          text = stringr::str_replace(
+            line, pattern_check, ""
+          )
+        )
+      }
+    }
   }
   close(con)
   markers

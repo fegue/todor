@@ -1,14 +1,16 @@
 library(todor)
 
+context("single and multiline patterns")
 test_that("test process_file function", {
   to_detect <- c("BUG")
   p <- process_file("demo.R", to_detect)
   expect_equal(length(p), 1)
   to_detect <- c("BUG", "TODO")
   p <- process_file("demo.R", to_detect)
-  expect_equal(length(p), 2)
+  expect_equal(length(p), 5)
 })
 
+context("markers")
 test_that("test create_markers function", {
   p <- list(file1.R = list(list(nr = 4, type = "TODO", text = "abc abc"),
                            list(nr = 6, type = "BUG", text = "www")))
@@ -21,6 +23,7 @@ test_that("test create_markers function", {
   expect_match(m[[2]]$type, "info")
 })
 
+context("find patterns")
 test_that("test find_pattern function", {
   p <- find_pattern("# TODO ab abc absdkskad", patterns = c("FIX"))
   expect_null(p)
