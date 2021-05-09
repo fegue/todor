@@ -37,7 +37,7 @@ find_pattern <- function(text, patterns = c("TODO", "FIXME")) {
 #' Internal function used to detect if a pattern is followed by a commented non-epmty line
 #'
 #'
-#' @param text
+#' @param text character with text
 #'
 #' @return boolean
 is_multiline <- function(text){
