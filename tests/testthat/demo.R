@@ -3,5 +3,4 @@ simple_function <- function(a, b) {
   x <- b + 1
   # TODO in the future it should be multiplication
   a + x
-  # TODO more stuff
 }
