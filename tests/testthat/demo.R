@@ -8,4 +8,6 @@ simple_function <- function(a, b) {
   # This line too.
   #
   # But this line won't, this will be a normal type of comment since it came after an empty comment line.
+  # TODO how does the function 'is_multiline' behave
+  # TODO if we have multiple patterns in a row
 }
