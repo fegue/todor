@@ -6,7 +6,7 @@ test_that("test process_file function", {
   expect_equal(length(p), 1)
   to_detect <- c("BUG", "TODO")
   p <- process_file("demo.R", to_detect)
-  expect_equal(length(p), 2)
+  expect_equal(length(p), 3)
 })
 
 test_that("test create_markers function", {
