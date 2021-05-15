@@ -9,7 +9,7 @@ todolist_to_file(todo.list, file_output)
 \arguments{
 \item{todo.list}{named output from \code{process_file}. list of files with lists of items detected in it}
 
-\item{file_output}{character string; file to write to}
+\item{file_output}{character string with file to write to. File name can be provided with .txt extension or without. Any other extension will be replaced.}
 }
 \value{
 output of formatted markers into file
