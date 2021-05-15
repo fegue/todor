@@ -179,3 +179,22 @@ todor_file_addin <- function() {
   else
     todor_file(rstudioapi::getActiveDocumentContext()$path)
 }
+
+#' Todor export project addin
+#'
+#' Calls \code{todor} function.
+#'
+#' @export
+#' @import rstudioapi
+todor_export_project_addin <- function() {
+  project_path <- rstudioapi::getActiveProject()
+  if (is.null(project_path))
+    rstudioapi::showDialog("TODOr",
+                           paste("You're not within R project. Change to project,",
+                                 "or use `todor_file` instead.")
+    )
+  else
+    file_output <- file.path(project_path, "TODO.txt")
+    todor(search_path = project_path, file_output = file_output)
+    cli::cli_alert_success(paste("Your TODO list was exported to", file_output))
+}

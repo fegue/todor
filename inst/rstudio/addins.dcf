@@ -12,3 +12,8 @@ Name: Find package TODOs
 Description: Find all places of your package which require more work.
 Binding: todor_package_addin
 Interactive: false
+
+Name: Export project TODOs
+Description: Export all yout TODOs into a single file.
+Binding: todor_export_project_addin
+Interactive: false
