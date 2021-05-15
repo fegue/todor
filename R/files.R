@@ -67,3 +67,45 @@ list_files_with_extension <- function(extension, search_path) {
     full.names = TRUE
   )
 }
+
+#' Write detected markers to file
+#'
+#' Takes the output from \code{process_file} (named with file names) and writtes it to a file.
+#' Matched patterns will be grouped by file and type (e.g. TODO, BUG, etc.)
+#'
+#' @param todo.list named output from \code{process_file}. list of files with lists of items detected in it
+#' @param file_output character string; file to write to
+#'
+#' @return output of formatted markers into file
+todolist_to_file <- function(todo.list, file_output) {
+
+  nonempty <- Filter(function(k) length(k) > 0, todo.list)
+  vec <- lapply(nonempty, function(x) {
+    # combinde all matches per file in one dataframe
+    df_bind <- do.call(
+      rbind,
+      lapply(x, function(y) {
+        df <- as.data.frame(y)
+        # clean text
+        df$text <- stringr::str_trim(df$text, side = "both")
+        df$text <- stringr::str_remove(df$text, "#")
+        # add indentation for formatting in text-file
+        df$type <- paste0("\t", df$type)
+        df$text <- paste0("\t", df$text)
+        df$nr <- NULL
+        df
+      })
+    )
+    # split into groups per type
+    split_type <- split(df_bind, df_bind$type)
+
+    # make character vector with type + text
+    combined <- lapply(split_type, function(y) {
+      c(unique(y$type), y$text)
+    })
+    unlist(combined)
+  })
+  # add name of file to character vector
+  filename_vec <- unlist(mapply(c, names(vec), vec))
+  cat(filename_vec, file = file_output, sep = "\n")
+}
