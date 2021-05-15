@@ -18,7 +18,8 @@
 find_pattern <- function(text, patterns = c("TODO", "FIXME")) {
   pattern_col <- paste(patterns, collapse = "|")
   pattern <- sprintf("^\\s{0,}.{0,6}(%s).+?(\\w.*?)\\s?(-->)?$", pattern_col)
-  inline_pattern <- sprintf("#'?\\s?(%s)[^A-Z]*", pattern_col)
+  inline_pattern <- sprintf("(#'?\\s?(%s)[^A-Z]*)|(<!--\\s?(%s)[^A-Z]*)",
+                            pattern_col, pattern_col)
   extr <- stringr::str_extract(text, pattern)
   if (!is.na(extr))
     extr <- stringr::str_extract(extr, "[a-zA-Z]+")
@@ -58,4 +59,23 @@ is_multiline <- function(text){
     {if(. > 0) TRUE else FALSE}
 
   return(starts_with_comment & line_not_empty)
+
+ #' Clean line from comment tags
+#'
+#' @param line character with comment tag to remove
+#'
+#' @return cleaned character
+#'
+#' @examples
+#' clean_comments("#' TODO abc abc") #"TODO abc abc"
+clean_comments <- function(line, pattern = NULL) {
+  if (!is.null(pattern)) {
+    line <- stringr::str_extract(line, sprintf("(%s).*", pattern)) # find comment starting from pattern
+    line <- stringr::str_replace(line, "-->.*", "") # in case of HTML pattern remove ending
+  }
+  line <- stringr::str_replace(line, "^ *#'?", "")
+  line <- stringr::str_replace(line, "^ *<!--", "")
+  line <- stringr::str_replace(line, "--> *$", "")
+  trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+  trim(line)
 }
