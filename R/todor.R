@@ -39,11 +39,12 @@ rex::register_shortcuts("todor")
 #' looking for.
 #' @param file character with path to file. If not NULL the search_path
 #' will be ignored.
+#' @param file_output character string with file to write to. If NULL, matches appear as RStudio markers.
 #'
 #' @export
 #' @import rex
 #' @import utils
-todor <- function(todo_types = NULL, search_path = getwd(), file = NULL) {
+todor <- function(todo_types = NULL, search_path = getwd(), file = NULL, file_output = NULL) {
   if (is.null(file)) {
     if (getOption("todor_exclude_r", FALSE)) {
       files <- c()
@@ -101,8 +102,13 @@ todor <- function(todo_types = NULL, search_path = getwd(), file = NULL) {
   }
   processed <- lapply(files, function(x) process_file(x, todo_types))
   names(processed) <- files
-  markers <- create_markers(processed)
-  build_rstudio_markers(markers)
+
+  if (!is.null(file_output)) {
+    todolist_to_file(processed, file_output)
+  } else {
+    markers <- create_markers(processed)
+    build_rstudio_markers(markers)
+  }
 }
 
 #' Todor Package addin
@@ -113,14 +119,15 @@ todor <- function(todo_types = NULL, search_path = getwd(), file = NULL) {
 #'
 #' @param todo_types vector with character describing types of elements to detect.
 #' If NULL default items will be used.
+#' @param file_output character string with file to write to. If NULL, matches appear as RStudio markers.
 #'
 #' @export
-todor_package <- function(todo_types = NULL) {
+todor_package <- function(todo_types = NULL, file_output = NULL) {
   pkg_path    <- find_package()
   search_path <- file.path(pkg_path,
                            c("R", "tests", "inst")
                   )
-  todor(todo_types = todo_types, search_path = search_path)
+  todor(todo_types = todo_types, search_path = search_path, file_output = file_output)
 }
 
 #' Todor file
@@ -128,10 +135,11 @@ todor_package <- function(todo_types = NULL) {
 #' @param file_name character with file name
 #' @param todo_types vector with character describing types of elements to detect.
 #' If NULL default items will be used.
+#' @param file_output character string with file to write to. If NULL, matches appear as RStudio markers.
 #'
 #' @export
-todor_file <- function(file_name, todo_types = NULL) {
-  todor(todo_types = todo_types, file = file_name)
+todor_file <- function(file_name, todo_types = NULL, file_output = NULL) {
+  todor(todo_types = todo_types, file = file_name, file_output = file_output)
 }
 
 #' Todor project addin
