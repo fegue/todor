@@ -74,7 +74,7 @@ list_files_with_extension <- function(extension, search_path) {
 #' Matched patterns will be grouped by file and type (e.g. TODO, BUG, etc.)
 #'
 #' @param todo.list named output from \code{process_file}. list of files with lists of items detected in it
-#' @param file_output character string; file to write to
+#' @param file_output character string with file to write to. File name can be provided with .txt extension or without. Any other extension will be replaced.
 #'
 #' @return output of formatted markers into file
 todolist_to_file <- function(todo.list, file_output) {
@@ -107,5 +107,7 @@ todolist_to_file <- function(todo.list, file_output) {
   })
   # add name of file to character vector
   filename_vec <- unlist(mapply(c, names(vec), vec))
-  cat(filename_vec, file = file_output, sep = "\n")
+
+  file <- paste0(tools::file_path_sans_ext(file_output), ".txt")
+  cat(filename_vec, file = file, sep = "\n")
 }
