@@ -33,7 +33,34 @@ find_pattern <- function(text, patterns = c("TODO", "FIXME")) {
   extr
 }
 
-#' Clean line from comment tags
+#' Find multiline patterns
+#'
+#' Internal function used to detect if a pattern is followed by a commented non-epmty line
+#'
+#'
+#' @param text character with text
+#'
+#' @return boolean
+is_multiline <- function(text){
+
+  starts_with_comment <-
+    text %>%
+    stringr::str_trim(side = "both") %>%
+    startsWith(prefix = "#")
+
+  line_not_empty <-
+    text %>%
+    # get rid of whitespaces before comment symbol #
+    stringr::str_trim(side = "both") %>%
+    stringr::str_remove("#") %>%
+    # whitespace should not be counted as character
+    stringr::str_trim(side = "both") %>%
+    stringr::str_length() %>%
+    {if(. > 0) TRUE else FALSE}
+
+  return(starts_with_comment & line_not_empty)
+
+ #' Clean line from comment tags
 #'
 #' @param line character with comment tag to remove
 #'

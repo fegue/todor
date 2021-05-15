@@ -44,8 +44,22 @@ process_file <- function(filepath, patterns) {
       markers[[length(markers) + 1]] <- list(nr = n,
                                              type = pattern_check,
                                              text = cleaned_line)
+      repeat {
+        n <- n + 1
+        line <- readLines(con, n = 1)
+        multiline_check <- is_multiline(line)
+        if (!multiline_check) {
+          break
+        }
+        markers[[length(markers) + 1]] <- list(
+          nr = n,
+          type = pattern_check,
+          text = stringr::str_replace(
+            line, pattern_check, ""
+          )
+        )
+      }
     }
-    n <- n + 1
   }
   close(con)
   markers
